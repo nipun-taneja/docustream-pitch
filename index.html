@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuStream | Investor Pitch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Corporate Trust Palette -->
+    <!-- Application Structure Plan: The application is structured as a single-page, scrollable narrative, mimicking a classic investor pitch deck flow. It starts with a high-impact problem statement, introduces our elegant solution, defines the lucrative niche market, quantifies the value proposition, details the brilliant "Trojan Horse" go-to-market strategy, and concludes with the team and ask. This linear, story-driven approach is designed to be highly persuasive and easy for investors to follow, building a compelling case step-by-step. Navigation is handled by a sticky header that guides the user and indicates progress through the narrative. -->
+    <!-- Visualization & Content Choices: 
+        1. The Problem: Report Info -> Delays cause massive fees. Goal -> Visualize the escalating financial pain. Viz/Method -> Bar Chart (Chart.js) showing exponential demurrage costs over time. Interaction -> Tooltips on bars provide specific cost data. Justification -> A simple bar chart is the most effective way to show how costs quickly become unmanageable.
+        2. Market Opportunity: Report Info -> Focus on agri-commodity trade finance in SEA. Goal -> Show this is a significant and well-defined niche. Viz/Method -> Donut Chart (Chart.js) to contextualize the niche within the broader market. Interaction -> Hovering reveals segment details. Justification -> A donut chart effectively illustrates a "piece of the pie," making the market segment easy to grasp.
+        3. GTM Strategy: Report Info -> The "Trojan Horse" model. Goal -> Clearly explain the multi-step strategic advantage. Viz/Method -> A sequence of cards laid out with HTML/Tailwind to create a visual flow diagram. Interaction -> Elements fade in on scroll to guide the user's focus through the steps. Justification -> A custom HTML diagram provides more design flexibility and is more lightweight than a chart for a simple process flow.
+        4. Value Proposition: Report Info -> Key ROI points for exporters. Goal -> Present the core benefits clearly and powerfully. Viz/Method -> A 3-column card layout using HTML/Tailwind. Interaction -> Subtle hover effects to add a premium feel. Justification -> Cards allow each value proposition to be presented as a distinct, digestible, and impactful point.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8; /* Warm Neutral Background */
+            color: #333D4B;
+        }
+        .accent-color { color: #1E3A8A; }
+        .accent-bg { background-color: #1E3A8A; }
+        .secondary-bg { background-color: #FFFFFF; }
+        .header-nav a.active {
+            color: #1E3A8A;
+            font-weight: 600;
+        }
+        .kpi-number {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .chart-container {
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+            max-height: 400px;
+        }
+        @media (min-width: 768px) { 
+            .chart-container { 
+                height: 350px; 
+            } 
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1E3A8A;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold accent-color">DocuStream</h1>
+                </div>
+                <nav class="hidden md:flex md:items-center md:space-x-8 header-nav">
+                    <a href="#problem" class="text-gray-600 hover:text-gray-900">The Problem</a>
+                    <a href="#solution" class="text-gray-600 hover:text-gray-900">Solution</a>
+                    <a href="#demo" class="text-gray-600 hover:text-gray-900">Live Demo</a>
+                    <a href="#market" class="text-gray-600 hover:text-gray-900">Market</a>
+                    <a href="#strategy" class="text-gray-600 hover:text-gray-900">Strategy</a>
+                    <a href="#contact" class="text-gray-600 hover:text-gray-900">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="py-24 md:py-32 text-center">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight">De-Risking Global Trade, One Document at a Time.</h1>
+                <p class="mt-6 text-lg md:text-xl text-gray-600">DocuStream is the AI-powered "pre-flight check" for trade finance, eliminating costly document discrepancies before they cripple cash flow and supply chains.</p>
+            </div>
+        </section>
+
+        <section id="problem" class="py-20 md:py-28 bg-white fade-in-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Multi-Billion Dollar Typo</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">In trade finance, a single document discrepancy—a mismatched date, a typo—creates a domino effect of catastrophic costs for exporters.</p>
+                </div>
+
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="p-8 rounded-lg">
+                        <p class="kpi-number accent-color">5-10</p>
+                        <p class="mt-2 text-lg font-semibold">Days of Payment Delays</p>
+                        <p class="mt-2 text-gray-600">Discrepancies halt payments, freezing millions in working capital and crushing the cash conversion cycle.</p>
+                    </div>
+                    <div class="p-8 rounded-lg">
+                        <p class="kpi-number accent-color">$100k+</p>
+                        <p class="mt-2 text-lg font-semibold">In Punitive Fees</p>
+                        <p class="mt-2 text-gray-600">Goods held at port due to paperwork errors rack up massive demurrage fees, eroding profit margins.</p>
+                    </div>
+                    <div class="p-8 rounded-lg">
+                        <p class="kpi-number accent-color">100s</p>
+                        <p class="mt-2 text-lg font-semibold">Of Wasted Staff Hours</p>
+                        <p class="mt-2 text-gray-600">Operations teams waste countless hours on back-and-forth with banks to resolve preventable errors.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-20">
+                    <h3 class="text-2xl text-center font-semibold">The Exponential Cost of Demurrage</h3>
+                    <p class="mt-2 text-center text-gray-600 max-w-2xl mx-auto">This chart illustrates how port storage (demurrage) fees for a single container can skyrocket, turning a minor delay into a major financial loss.</p>
+                    <div class="mt-8 chart-container">
+                        <canvas id="demurrageChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="solution" class="py-20 md:py-28 fade-in-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Digital Pre-Flight Check</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Our SaaS platform allows exporters to validate their entire document package against banking compliance rules *before* submission, instantly catching 100% of discrepancies.</p>
+                </div>
+
+                <div class="mt-20 flow-chart">
+                    <div class="grid grid-cols-1 md:grid-cols-4 items-center gap-4 text-center">
+                        <div class="p-6 secondary-bg rounded-lg shadow-md">
+                            <div class="text-3xl font-bold accent-color">1</div>
+                            <h3 class="text-lg font-semibold mt-2">Upload Documents</h3>
+                            <p class="text-sm text-gray-600 mt-1">Exporter securely uploads the complete trade document set (B/L, C/O, etc.).</p>
+                        </div>
+                        <div class="hidden md:block text-gray-300 text-4xl">→</div>
+                        <div class="p-6 secondary-bg rounded-lg shadow-md">
+                            <div class="text-3xl font-bold accent-color">2</div>
+                            <h3 class="text-lg font-semibold mt-2">AI Cross-Validation</h3>
+                            <p class="text-sm text-gray-600 mt-1">DocuStream's engine instantly cross-references all data points, just like a bank would.</p>
+                        </div>
+                        <div class="hidden md:block text-gray-300 text-4xl">→</div>
+                         <div class="p-6 secondary-bg rounded-lg shadow-md">
+                            <div class="text-3xl font-bold accent-color">3</div>
+                            <h3 class="text-lg font-semibold mt-2">Instant Feedback</h3>
+                            <p class="text-sm text-gray-600 mt-1">A clear report highlights any discrepancies for immediate correction.</p>
+                        </div>
+                        <div class="hidden md:block text-gray-300 text-4xl">→</div>
+                        <div class="p-6 accent-bg rounded-lg shadow-md text-white">
+                            <div class="text-3xl font-bold">4</div>
+                            <h3 class="text-lg font-semibold mt-2">Submit with Confidence</h3>
+                            <p class="text-sm mt-1">Submit a perfect, pre-validated package for first-time bank approval.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="demo" class="py-20 md:py-28 bg-white fade-in-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold">See Our AI in Action</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">This is a simplified demo of our core technology. We've loaded two sample documents with a critical discrepancy. Click below to see if our AI can find it.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-semibold text-lg mb-2 text-gray-700">📄 Bill of Lading (Sample)</h3>
+                        <div id="doc1" class="p-4 border rounded-lg bg-gray-50 h-64 font-mono text-sm overflow-y-auto">
+                            <p><strong>Shipper:</strong> Mekong Delta Rice Co.</p>
+                            <p><strong>Consignee:</strong> Singapore Fine Imports Pte Ltd</p>
+                            <p><strong>Vessel Name:</strong> The Sea Serpent</p>
+                            <p><strong>Port of Loading:</strong> Ho Chi Minh City, Vietnam</p>
+                            <p><strong>Port of Discharge:</strong> Singapore</p>
+                            <p><strong>Goods Description:</strong> 25,000 MT Vietnamese White Rice</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg mb-2 text-gray-700">📄 Certificate of Origin (Sample)</h3>
+                        <div id="doc2" class="p-4 border rounded-lg bg-gray-50 h-64 font-mono text-sm overflow-y-auto">
+                            <p><strong>Exporter:</strong> Mekong Delta Rice Co.</p>
+                            <p><strong>Importer:</strong> Singapore Fine Imports Pte Ltd</p>
+                            <p><strong>Vessel Name:</strong> The Ocean Voyager</p>
+                            <p><strong>Port of Departure:</strong> Ho Chi Minh City, Vietnam</p>
+                            <p><strong>Final Destination:</strong> Singapore</p>
+                            <p><strong>Description of Goods:</strong> 25,000 Metric Tons Vietnamese White Rice</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-8">
+                    <button id="analyzeBtn" class="accent-bg text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:opacity-90 transition-opacity flex items-center justify-center mx-auto">
+                        <span class="mr-2">✨</span> Find Discrepancies
+                    </button>
+                </div>
+
+                <div id="resultsContainer" class="mt-8 hidden">
+                    <div id="loader" class="mx-auto loader hidden"></div>
+                    <div id="resultsContent" class="p-6 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h3 class="text-xl font-semibold accent-color mb-3">Analysis Complete</h3>
+                        <div id="geminiResponse" class="text-gray-700 space-y-2"></div>
+                    </div>
+                     <div id="errorContent" class="p-6 bg-red-50 border border-red-200 rounded-lg hidden">
+                        <h3 class="text-xl font-semibold text-red-700 mb-3">Error</h3>
+                        <p id="errorMessage" class="text-gray-700"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="py-20 md:py-28 fade-in-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold">Our Beachhead: The Perfect Storm</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">We are targeting a hyper-niche market where the pain is most acute: agricultural commodity trade finance in South-East Asia.</p>
+                </div>
+                <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-semibold">Why this Niche?</h3>
+                        <ul class="mt-6 space-y-4">
+                            <li class="flex items-start">
+                                <span class="accent-color font-bold mr-3">✓</span>
+                                <div><strong class="text-gray-800">High Value Transactions:</strong> Multi-million dollar shipments where delays have severe financial consequences.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="accent-color font-bold mr-3">✓</span>
+                                <div><strong class="text-gray-800">Extreme Document Complexity:</strong> A web of bills, certificates, and inspections ripe for error.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="accent-color font-bold mr-3">✓</span>
+                                <div><strong class="text-gray-800">High Cost of Failure:</strong> Perishable goods mean delays can lead to total loss, amplifying the urgency.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="accent-color font-bold mr-3">✓</span>
+                                <div><strong class="text-gray-800">Multilingual Challenge:</strong> Documents in Chinese, English, and local languages are a perfect fit for our AI's capabilities.</div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl text-center font-semibold">Agri-Commodities in Global Trade</h3>
+                        <p class="mt-2 text-center text-gray-600 max-w-2xl mx-auto">This segment represents a substantial portion of the global trade finance market, offering a large, focused customer base.</p>
+                        <div class="mt-4 chart-container h-64 md:h-80">
+                            <canvas id="marketChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategy" class="py-20 md:py-28 bg-white fade-in-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold">The "Trojan Horse" Go-to-Market</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Our strategy bypasses the long sales cycles of banks. We sell directly to exporters, who then become our best salespeople to their banking partners.</p>
+                </div>
+                <div class="mt-20 space-y-12">
+                    <div class="trojan-step flex flex-col md:flex-row items-center gap-8">
+                        <div class="flex-shrink-0 w-24 h-24 rounded-full accent-bg text-white flex items-center justify-center text-4xl font-bold">1</div>
+                        <div class="flex-1 text-center md:text-left">
+                            <h3 class="text-2xl font-semibold">Target the Exporter</h3>
+                            <p class="mt-2 text-gray-600">We approach commodity traders (Cargill, Olam, etc.) with a clear ROI: accelerate cash flow and eliminate fees. This is a fast, value-driven SaaS sale, not a complex enterprise procurement.</p>
+                        </div>
+                    </div>
+                     <div class="trojan-step flex flex-col md:flex-row-reverse items-center gap-8">
+                        <div class="flex-shrink-0 w-24 h-24 rounded-full accent-bg text-white flex items-center justify-center text-4xl font-bold">2</div>
+                        <div class="flex-1 text-center md:text-right">
+                            <h3 class="text-2xl font-semibold">Create a Network Effect</h3>
+                            <p class="mt-2 text-gray-600">Our clients begin submitting perfect, pre-validated documents to their banks (DBS, StanChart, etc.). The banks' operations teams quickly notice a dramatic drop in errors from our clients.</p>
+                        </div>
+                    </div>
+                     <div class="trojan-step flex flex-col md:flex-row items-center gap-8">
+                        <div class="flex-shrink-0 w-24 h-24 rounded-full accent-bg text-white flex items-center justify-center text-4xl font-bold">3</div>
+                        <div class="flex-1 text-center md:text-left">
+                            <h3 class="text-2xl font-semibold">Build the Ultimate Inbound Lead</h3>
+                            <p class="mt-2 text-gray-600">We approach the banks not with a cold call, but with data. "You've seen how efficient Cargill's submissions are. We're the platform they use. Let's do that for all your clients."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact" class="py-20 md:py-28 fade-in-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold">Join Us</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">We are seeking $1.5M in seed funding to expand our engineering team, onboard our first pilot customers, and revolutionize a cornerstone of global trade.</p>
+                <a href="mailto:invest@docustream.ai" class="mt-8 inline-block accent-bg text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:opacity-90 transition-opacity">
+                    Contact Us
+                </a>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 DocuStream. All rights reserved.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const demurrageCtx = document.getElementById('demurrageChart').getContext('2d');
+    new Chart(demurrageCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20'],
+            datasets: [{
+                label: 'Cumulative Demurrage Cost ($)',
+                data: [500, 2500, 7500, 20000, 45000],
+                backgroundColor: 'rgba(30, 58, 138, 0.8)',
+                borderColor: 'rgba(30, 58, 138, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return ' Cost: $' + context.parsed.y.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const marketCtx = document.getElementById('marketChart').getContext('2d');
+    new Chart(marketCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Agri-Commodities', 'Oil & Gas', 'Manufacturing', 'Metals & Mining', 'Other'],
+            datasets: [{
+                label: 'Global Trade Finance Volume',
+                data: [18, 25, 22, 15, 20],
+                backgroundColor: [
+                    '#1E3A8A', // Accent
+                    '#60A5FA',
+                    '#93C5FD',
+                    '#BFDBFE',
+                    '#E0E7FF'
+                ],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    });
+
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.header-nav a');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.6
+    };
+
+    const sectionObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
+
+    const fadeObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in-section').forEach(section => {
+        fadeObserver.observe(section);
+    });
+    
+    document.querySelectorAll('.trojan-step').forEach((step, index) => {
+        setTimeout(() => {
+             const stepObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.transitionDelay = `${index * 200}ms`;
+                        entry.target.classList.add('is-visible');
+                        stepObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            stepObserver.observe(step);
+            step.classList.add('fade-in-section');
+        }, 0);
+    });
+
+    let lastScrollY = window.scrollY;
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+            header.classList.add('py-2');
+            header.classList.remove('py-4');
+        } else {
+            header.classList.add('py-4');
+            header.classList.remove('py-2');
+        }
+        lastScrollY = window.scrollY;
+    });
+
+    // Gemini API Demo Logic
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const loader = document.getElementById('loader');
+    const resultsContent = document.getElementById('resultsContent');
+    const geminiResponse = document.getElementById('geminiResponse');
+    const errorContent = document.getElementById('errorContent');
+    const errorMessage = document.getElementById('errorMessage');
+
+    analyzeBtn.addEventListener('click', async () => {
+        resultsContainer.style.display = 'block';
+        resultsContent.style.display = 'none';
+        errorContent.style.display = 'none';
+        loader.style.display = 'block';
+        analyzeBtn.disabled = true;
+
+        const doc1Text = document.getElementById('doc1').innerText;
+        const doc2Text = document.getElementById('doc2').innerText;
+
+        const systemPrompt = "You are an AI-powered trade finance document checker named DocuStream. Your task is to analyze the following Bill of Lading and Certificate of Origin. Cross-reference all data points and identify any and all discrepancies between the two documents. Present your findings clearly and concisely. Start with a summary sentence, then list the specific discrepancies found with the differing values highlighted.";
+
+        const userQuery = `
+            Here is the Bill of Lading:
+            ---
+            ${doc1Text}
+            ---
+
+            Here is the Certificate of Origin:
+            ---
+            ${doc2Text}
+            ---
+        `;
+
+        try {
+            const responseText = await callGeminiApi(systemPrompt, userQuery);
+            geminiResponse.innerHTML = responseText.replace(/\n/g, '<br>');
+            resultsContent.style.display = 'block';
+        } catch (error) {
+            errorMessage.textContent = 'Failed to get a response from the AI model. Please try again later. ' + error.message;
+            errorContent.style.display = 'block';
+        } finally {
+            loader.style.display = 'none';
+            analyzeBtn.disabled = false;
+        }
+    });
+
+    async function callGeminiApi(systemPrompt, userQuery, retries = 3, delay = 1000) {
+        const apiKey = ""; // Canvas will provide this
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: {
+                parts: [{ text: systemPrompt }]
+            },
+        };
+
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    return candidate.content.parts[0].text;
+                } else {
+                    throw new Error('Invalid response structure from API.');
+                }
+            } catch (error) {
+                if (i === retries - 1) throw error;
+                await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
+            }
+        }
+    }
+
+});
+</script>
+</body>
+</html>
+
